@@ -21,7 +21,6 @@ export function uiToolExportSafePlaces(context) {
         .html(true)
         .title(uiTooltipHtml(t('safeplaces_export.no_changes'), key))
         .scrollContainer(d3_select('#bar'));
-    var history = context.history();
     var key = uiCmd('⌘S');
     var _numChanges;
 
@@ -40,9 +39,12 @@ export function uiToolExportSafePlaces(context) {
     }
 
     function updateCount() {
-        var val = history.difference().summary().length;
-        if (val === _numChanges) return;
-        _numChanges = val;
+        var extent = geoExtent([
+            [-180, -90],
+            [180, 90]
+          ]);
+        var all = context.intersects(extent);
+        _numChanges = all.length;
 
         if (tooltipBehavior) {
             tooltipBehavior
